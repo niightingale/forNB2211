@@ -273,49 +273,33 @@ def loadData():
     plt.show()
 
 #%% MEASURING
-measure()
+measure(25)
 
 #%% LOADING DATA
 loadData()
 
 #%% LOADING NEW DATA
-loadDataEx(mode = 'WINDOW', f_cutoff=400,s_window= 2, inject = 'Plot 1')
+loadDataEx(mode = 'WINDOW', f_cutoff=400,s_window= 10, inject = 'Plot 6b')
 
 # %%
-tmp1 = np.load(r'm_water.npz')
+tmp1 = np.load(r'm_yeast_04_02.npz')
 read1 = tmp1['arr_0']
 tmp2 = np.load(r'm_yeast_17_01_1200_2.npz')
 read2 = tmp2['arr_0']
 
-from scipy import signal
-from scipy import stats
-import math
+read_cut = read1[0:15000,:,:]
+#storeData(read_cut, 'yeast_04_02_cut')
 
-data = read1[:,2,0]
-time_axis = read1[:,2,1]
-
-# CONVOLUTIONAL MOVING AVERAGE
-window = np.ones(2)/2
-data_averaged = np.convolve(data, window, mode = 'same')
-
-plt.plot(data_averaged)
-plt.show()
-
-sos = signal.butter(10, 100, 'low', fs=10000, output='sos')
-filtered = signal.sosfilt(sos,data)
-
-c, d = np.polyfit(time_axis, data, 1)
-c_trunc = '%.3f'%(c * 3600)
-plt.plot(time_axis, c*time_axis + d, label = 'Best Fit. Slope: ' + str(c_trunc))
-print(c*3600)
-plt.plot(time_axis, filtered, label = 'Filtered Raw')
-plt.legend()
+from scipy.stats import linregress
+linregress(read_cut[:,2,1], read_cut[:,2,0])
 
 # %% INFO
 '''
 -17/01 run > We used 11 mL of water, with 1.5 mL sugar and 0.5 mL yeast.
     We tracked for 1 full hour.
 -23/01 run ? 7 mL of water, with 1.5 mL sugar and 0.5 mL yeast. (81000=9h) CRASHED
+-30/01 run -> redo of 23/01
+-04/02 run > 7 mL of water, 1 mL brown sugar, 1 mL yeast.
 
 -dns_with > Using heater, greatly induces noise by satuarating the 5V rail as it 
 pulls a great amperage (40 ohm).
