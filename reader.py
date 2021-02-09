@@ -279,16 +279,20 @@ measure(25)
 loadData()
 
 #%% LOADING NEW DATA
-loadDataEx(mode = 'WINDOW', f_cutoff=400,s_window= 10, inject = 'Plot 6b')
+loadDataEx(mode = 'WINDOW', f_cutoff=400,s_window= 1000, inject = 'Plot 7b')
 
 # %%
-tmp1 = np.load(r'm_yeast_04_02.npz')
+tmp1 = np.load(r'm_j1.npz')
+tmp3 = np.load(r'm_j1cont.npz')
 read1 = tmp1['arr_0']
+read3 = tmp3['arr_0']
+read4 = np.vstack((read1, read3))
+storeData(read4, 'j1_full')
 tmp2 = np.load(r'm_yeast_17_01_1200_2.npz')
 read2 = tmp2['arr_0']
 
-read_cut = read1[0:15000,:,:]
-#storeData(read_cut, 'yeast_04_02_cut')
+read_cut = read1[0:12500,:,:]
+#storeData(read_cut, 'j2_cut')
 
 from scipy.stats import linregress
 linregress(read_cut[:,2,1], read_cut[:,2,0])
